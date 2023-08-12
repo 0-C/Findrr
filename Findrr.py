@@ -82,7 +82,7 @@ def perform_searches(search_file, folder_path, output_file):
                 for filename, line_number, line in results:
                     formatted_line = line.replace(search_text, f"'{search_text}'")
                     results_output.write(f"In file: {filename}, line {line_number}: {formatted_line.strip()}\n")
-            results_output.write("\n")
+                results_output.write("\n")  # Write a newline after each search query
 
 
 def manual_search(folder_path):
@@ -123,7 +123,7 @@ def main():
 
         perform_searches(search_file, folder_path, output_file)
 
-        if os.path.getsize(output_file) > 0:
+        if os.path.exists(output_file) and os.path.getsize(output_file) > 0:
             print(Fore.LIGHTGREEN_EX + f"Search results saved to '{output_file}'")
         else:
             print(Fore.RED + "No results found in the automatic search.")
