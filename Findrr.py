@@ -46,7 +46,6 @@ def rexmail(cfile, xfile):
         xfile.write(str(cfile[i]))
 
 
-
 def combo_extractor():
     input_file = "combo.txt"
     output_file_name = input("Enter the name for the output file (without extension): ") + ".txt"
@@ -83,8 +82,6 @@ def perform_searches(search_file, folder_path, output_file):
                 for filename, line_number, line in results:
                     formatted_line = line.replace(search_text, f"'{search_text}'")
                     results_output.write(f"In file: {filename}, line {line_number}: {formatted_line.strip()}\n")
-            else:
-                results_output.write(f"'{search_text}' not found in any files.\n")
             results_output.write("\n")
 
 
@@ -130,7 +127,6 @@ def main():
             print(Fore.LIGHTGREEN_EX + f"Search results saved to '{output_file}'")
         else:
             print(Fore.RED + "No results found in the automatic search.")
-            os.remove(output_file)
 
         input("Press Enter to continue...")
         os.system('cls' if os.name == 'nt' else 'clear')
