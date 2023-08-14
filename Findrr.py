@@ -1,13 +1,14 @@
+from collections import Counter
 import os
 import re
 from colorama import init, Fore
 
-# Clear the screen
+
 os.system('cls' if os.name == 'nt' else 'clear')
 
 mace = Fore.LIGHTRED_EX + "mace"
 
-# ASCII art
+
 ascii_art = rf"""
  $$$$$$$$\ $$\                 $$\                     
  $$  _____|\__|                $$ |                    
@@ -17,7 +18,6 @@ ascii_art = rf"""
  $$ |      $$ |$$ |  $$ |$$ |  $$ |$$ |      $$ |      
  $$ |      $$ |$$ |  $$ |\$$$$$$$ |$$ |      $$ |      
  \__|      \__|\__|  \__| \_______|\__|      \__|  by {mace}    
-
 
 
 """
@@ -54,7 +54,7 @@ def combo_extractor():
     with open(input_file, 'r') as cfile, open(output_file, 'w') as xfile:
         rexmail(cfile, xfile)
 
-    print(Fore.LIGHTGREEN_EX + f"Combo extraction results saved to '{output_file}'")
+    print(Fore.LIGHTGREEN_EX + f"Results saved to {output_file}")
 
 
 def search_in_files(folder_path, search_text):
@@ -82,7 +82,7 @@ def perform_searches(search_file, folder_path, output_file):
                 for filename, line_number, line in results:
                     formatted_line = line.replace(search_text, f"'{search_text}'")
                     results_output.write(f"In file: {filename}, line {line_number}: {formatted_line.strip()}\n")
-                results_output.write("\n")  # Write a newline after each search query
+                results_output.write("\n")
 
 
 def manual_search(folder_path):
@@ -103,12 +103,27 @@ def manual_search(folder_path):
         else:
             print(f"'{search_text}' not found in any files.")
 
+def extract_domains(filename):
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+
+    domains = []
+    for line in lines:
+        parts = line.strip().split(':')
+        if len(parts) == 2 and '@' in parts[0]:
+            email = parts[0]
+            domain = email.split('@')[1]
+            domains.append(domain.lower())
+
+    return domains
+
 
 def main():
     print(Fore.RED + ascii_art)
     print(Fore.WHITE + " 1. " + Fore.LIGHTRED_EX + "Automatic: " + Fore.WHITE + "Bulk search")
     print(" 2. " + Fore.LIGHTRED_EX + "Manual: " + Fore.WHITE + "Specific search")
     print(" 3. " + Fore.LIGHTRED_EX + "Combo Extractor: " + Fore.WHITE + "Email:Pass Extractor")
+    print(" 4. " + Fore.LIGHTRED_EX + "Domain Extractor: " + Fore.WHITE + "Extract domains from combo list")
 
     create_results_folder()
     create_combo_file()
@@ -139,6 +154,33 @@ def main():
         input("Press Enter to continue...")
         os.system('cls' if os.name == 'nt' else 'clear')
         main()
+    elif option == "4":
+        filename = "combo.txt"
+        domains = extract_domains(filename)
+        domain_count = Counter(domains)
+
+        sorted_domains = sorted(domain_count.items(), key=lambda x: x[1],
+                                reverse=True)
+
+        output_text = ""
+        for domain, count in sorted_domains:
+            output_text += f"{domain} ( {count} )\n"
+
+        file_name = input("Enter the name for the output file (without extension): ")
+        file_name_with_extension = file_name + "_DOMAINs.txt"
+        output_path = os.path.join("results", file_name_with_extension)
+
+        if not os.path.exists("results"):
+            os.makedirs("results")
+
+        with open(output_path, 'w') as file:
+            file.write(output_text)
+
+        print(Fore.LIGHTGREEN_EX + f"Results saved to {output_path}")
+
+        input("Press Enter to continue...")
+        os.system('cls' if os.name == 'nt' else 'clear')
+        main()
     else:
         print(Fore.RED + "Invalid option.")
         input("Press Enter to continue...")
@@ -148,3 +190,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
+    # what u looking at
