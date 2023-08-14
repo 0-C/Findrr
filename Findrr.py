@@ -80,28 +80,33 @@ def perform_searches(search_file, folder_path, output_file):
             if results:
                 results_output.write(f"'{search_text}' found in the following files:\n")
                 for filename, line_number, line in results:
-                    formatted_line = line.replace(search_text, f"'{search_text}'")
+                    formatted_line = line.replace(search_text, f"{search_text}")
                     results_output.write(f"In file: {filename}, line {line_number}: {formatted_line.strip()}\n")
                 results_output.write("\n")
 
 
 def manual_search(folder_path):
+    print("")
+    print(' Type "exit" to go back.')
     while True:
-        search_text = input("Enter the exact text to search (or type 'exit' to quit): ")
+        print("")
+        search_text = input(" User: ")
 
         if search_text.lower() == "exit":
             print("Exiting the search.")
+            os.system('cls' if os.name == 'nt' else 'clear')
+            main()
             break
 
         results = search_in_files(folder_path, search_text)
 
         if results:
-            print(f"'{search_text}' found in the following files:")
+            print(Fore.LIGHTGREEN_EX +f" '{search_text}'", "found in:")
             for filename, line_number, line in results:
                 formatted_line = line.replace(search_text, f"'{search_text}'")
-                print(f"In file: {filename}, line {line_number}: {formatted_line.strip()}")
+                print(" > " + Fore.LIGHTBLUE_EX + "In file" + Fore.WHITE + f": {filename}", Fore.LIGHTBLUE_EX + f"line {line_number}" + Fore.WHITE + f": {formatted_line.strip()}")
         else:
-            print(f"'{search_text}' not found in any files.")
+            print(Fore.LIGHTRED_EX +f" '{search_text}'", "Not found.")
 
 def extract_domains(filename):
     with open(filename, 'r') as file:
@@ -128,7 +133,7 @@ def main():
     create_results_folder()
     create_combo_file()
 
-    option = input()
+    option = input(" > ")
 
     if option == "1":
         search_file = "combo.txt"
@@ -190,5 +195,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+
     # what u looking at
